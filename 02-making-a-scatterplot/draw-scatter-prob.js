@@ -7,13 +7,17 @@ async function drawScatter() {
   //Look at the data structure and declare how to access the values we'll need
 
   const dataset = await d3.json("./../my_weather_data.json")
+  console.table(dataset[0])
 
   const xAccessor = d => d.dewPoint
   const yAccessor = d => d.humidity
   const precipitationAccessor = d => d.precipType
+  const probabilityAccessor = d => d.precipProbability
 
   //2. Create Chart Dimensions -
   //Declare the physical (i.e. pixels) chart parameters
+
+  console.log(d3.max(dataset, probabilityAccessor))
 
   const width = d3.min([
     window.innerWidth * 0.95,
@@ -24,7 +28,7 @@ async function drawScatter() {
     width: width,
     height: width,
     margin: {
-      top: 50,
+      top: 40,
       right: 10,
       bottom: 50,
       left: 50,
@@ -61,28 +65,43 @@ async function drawScatter() {
     .domain(["rain", "snow"])
     .range(["cornflowerblue", "lightgrey"])
 
-  console.log(colorScale("snow"))
 
+   // const dotLinearScale = d3.scaleLinear()
+   //   .domain(d3.extent(dataset, probabilityAccessor))
+   //   .range([0.00001, d3.max(dataset, probabilityAccessor)])
+
+   const dotSizeScale = d3.scaleSymlog()
+     .domain(d3.extent(dataset, probabilityAccessor))
+     .range([1.5, 5])
+
+  console.log(dotSizeScale(0.5))
   //5. Draw Data
   //Render your data elements
 
-  function drawDots(dataset, color) {
-    const dots = bounds.selectAll("circle")
-      .data(dataset)
+  // function drawDots(dataset, color) {
+  //   const dots = bounds.selectAll("circle")
+  //     .data(dataset)
 
-    dots.enter().append("circle")
-      .merge(dots)
-        .attr("cx", d => xScale(xAccessor(d)))
-        .attr("cy", d => yScale(yAccessor(d)))
-        .attr("r" ,5)
-        .attr("fill", d => colorScale(precipitationAccessor(d)))
-  }
+      const dots = bounds.selectAll("circle")
+        .data(dataset)
+        .enter().append("circle")
+          .attr("cx", d => xScale(xAccessor(d)))
+          .attr("cy", d => yScale(yAccessor(d)))
+          .attr("r", d => dotSizeScale(probabilityAccessor(d)))
+          .attr("fill", d => colorScale(precipitationAccessor(d)))
 
-  drawDots(dataset.slice(0, 200), "darkgrey")
+    // dots.enter().append("circle")
+    //   .merge(dots)
+    //     .attr("cx", d => xScale(xAccessor(d)))
+    //     .attr("cy", d => yScale(yAccessor(d)))
+    //     .attr("r" , d => dotSizeScale(probabilityAccessor(d)))
+    //     .attr("fill", d => colorScale(precipitationAccessor(d)))
+  //}
+  // drawDots(dataset.slice(0, 200), "darkgrey")
 
-  setTimeout(() => {
-    drawDots(dataset, "cornflowerblue")
-  }, 1000)
+  // setTimeout(() => {
+  //   drawDots(dataset, "cornflowerblue")
+  // }, 1000)
 
   //6. Draw Peripherals
   //Render your axes, labels and legends
@@ -106,11 +125,10 @@ async function drawScatter() {
 
   const yAxis = bounds.append("g")
     .call(yAxisGenerator)
-      .style("transform", "translateX(-10px)")
 
   const yAxisLabel = yAxis.append("text")
-    .attr("y", -dimensions.margin.left + 10)
     .attr("x", -dimensions.boundedHeight / 2)
+    .attr("y", -dimensions.margin.left + 10)
     .attr("fill", "black")
     .style("font-size", "1.4em")
     .text("relative humidity")
@@ -120,12 +138,12 @@ async function drawScatter() {
     d3.select("#wrapper svg")
       .append("g")
       .append("text")
-      .attr("x", dimensions.boundedWidth / 2)
+      .attr("x", dimensions.boundedWidth / 2 + 50)
       .attr("y", 20 )
       .style("text-anchor", "middle")
       .style("font-size", "20px")
       .style("text-decoration", "underline")
-      .text("Daily Max Temperature in Tulsa, OK");
+      .text("Dew Point vs Humidity in Tulsa, OK");
   //!!! Step 7 not covered until Chapter 5 !!!
   //7. Set Up Interactions
   //Initialize event listeners for interaction
