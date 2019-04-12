@@ -1,0 +1,2 @@
+index,name,name.full,birth,death,birth.cty,birth.prv,rise,reign.start,reign.end,cause,killer,dynasty,era,notes,verif.who
+1,Augustus,IMPERATOR CAESAR DIVI FILIVS AVGVSTVS,0062-09-23,0014-08-19,Rome,Italia,Birthright,0026-01-16,0014-08-19,Assassination,Wife,Julio-Claudian,Principate,"birth, reign.start are BCE. Assign negative for correct ISO 8601 dates. Cause may have been Natural",Reddit user zonination
