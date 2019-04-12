@@ -7,10 +7,8 @@ async function drawScatter() {
   //Look at the data structure and declare how to access the values we'll need
 
   const dataset = await d3.json("./../my_weather_data.json")
-  const metricAccessor = d => d.humidity
-  const yAccessor = d => d.length
 
-  const mean = d3.mean(dataset, metricAccessor)
+
 
   //2. Create Chart Dimensions -
   //Declare the physical (i.e. pixels) chart parameters
@@ -35,7 +33,14 @@ async function drawScatter() {
   //3. Create Canvas -
   //Render the chart area and bounds element
 
-  let wrapper = d3.select("#wrapper")
+  const drawHistogram = metric => {
+    console.log(metric)
+
+    const metricAccessor = d => d[metric]
+    const yAccessor = d => d.length
+      const mean = d3.mean(dataset, metricAccessor)
+
+  const wrapper = d3.select("#wrapper")
     .append("svg")
       .attr("width", dimensions.width)
       .attr("height", dimensions.height)
@@ -57,8 +62,6 @@ async function drawScatter() {
       .thresholds(12)
 
     const bins = binsGenerator(dataset)
-
-    console.log(bins)
 
   const yScale = d3.scaleLinear()
     .domain([0, d3.max(bins, yAccessor)])
@@ -118,13 +121,28 @@ async function drawScatter() {
       .attr("y", dimensions.margin.bottom - 10)
       .attr("fill", "black")
       .style("font-size", "1.4em")
-      .text("Humidity")
+      .style("text-transform", "uppercase")
+      .text(metric)
 
 
+}
+      const metrics = [
+          "windSpeed",
+          "moonPhase",
+          "dewPoint",
+          "humidity",
+          "uvIndex",
+          "windBearing",
+          "temperatureMin",
+          "temperatureMax",
+      ]
+
+      metrics.forEach(drawHistogram)
 
 
   //!!! Step 7 not covered until Chapter 5 !!!
   //7. Set Up Interactions
   //Initialize event listeners for interaction
+
 }
 drawScatter()

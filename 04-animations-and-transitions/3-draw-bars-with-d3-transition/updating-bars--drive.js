@@ -1,6 +1,6 @@
 async function drawBars() {
   // load data
-  const dataset = await d3.json("./../../my_weather_data.json")
+  const dataset = await d3.json("./my_weather_data.json")
 
   // const width = window.innerWidth * 0.95
   const width = 500
@@ -18,7 +18,7 @@ async function drawBars() {
   dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom
 
   // create chart area
-  const wrapper = d3.select("#wrapper")
+  const wrapper = d3.select("#d3-wrapper")
     .append("svg")
       .attr("width", dimensions.width)
       .attr("height", dimensions.height)
