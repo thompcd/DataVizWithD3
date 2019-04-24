@@ -60,7 +60,7 @@ async function drawBars() {
       .nice()
 
     // draw the bars
-    const firstBin = bins[0]
+    const firstBin = bins[1]
     const barWidth = xScale(firstBin.x1) - xScale(firstBin.x0)
     const barPadding = 1
 
